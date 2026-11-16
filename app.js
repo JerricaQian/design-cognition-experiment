@@ -66,7 +66,7 @@ function escapeHtml(value) { const node = document.createElement("div"); node.te
 function renderChat() {
   const messages = state.chats.filter((item) => item.taskIndex === state.taskIndex);
   els.chatHistory.innerHTML = messages.length
-    ? messages.map((message) => `<div class="chat-message ${message.role}"><span class="chat-role">${message.role === "user" ? "参与者" : "AI · DEMO"}</span>${escapeHtml(message.content)}</div>`).join("")
+    ? messages.map((message) => `<div class="chat-message ${message.role}"><span class="chat-role">${message.role === "user" ? "参与者" : "AI"}</span>${escapeHtml(message.content)}</div>`).join("")
     : '<div class="chat-empty">此处会保留本任务的协作记录。</div>';
   els.chatHistory.scrollTop = els.chatHistory.scrollHeight;
 }
@@ -108,12 +108,12 @@ function renderAiState() {
     els.aiStatus.className = "ai-status";
     els.aiStatus.textContent = "等待思考开始";
     els.aiDescription.textContent = "本任务有一次协作机会。按铃开始思考后，可在 90 秒内直接输入。";
-    els.aiFootnote.textContent = "API 尚未接入 · 入口已预留";
+    els.aiFootnote.textContent = aiApiUrl ? "开始思考后可使用本阶段唯一一次 AI 协作。" : "AI 服务尚未配置。";
   } else {
     els.aiStatus.className = "ai-status ready";
     els.aiStatus.textContent = "本任务可用 1 次";
     els.aiDescription.textContent = "围绕当前任务与初步想法输入一次消息。该机会仅在本任务的 90 秒思考时间内有效。";
-    els.aiFootnote.textContent = "API 尚未接入 · 发送会记录为 Demo 对话";
+    els.aiFootnote.textContent = aiApiUrl ? "本阶段仅可发送一次；对话记录将在实验结束时一并导出。" : "AI 服务尚未配置。";
   }
 }
 function renderTask() {
