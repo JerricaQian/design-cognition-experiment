@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="设计认知实验研究工作台 demo" />
+    <meta name="theme-color" content="#000000" />
+    <title>Fieldwork - 设计认知实验</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳至主要内容</a>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Fieldwork 首页">
+        <span class="brand-mark" aria-hidden="true">F</span>
+        <span>FIELDWORK</span>
+      </a>
+      <div class="session-summary" aria-live="polite">
+        <span class="label">SESSION</span>
+        <span id="headerParticipant">未开始</span>
+      </div>
+      <button class="icon-button" id="helpButton" type="button" aria-label="查看实验说明" aria-expanded="false">?</button>
+    </header>
+
+    <main id="main-content">
+      <section class="intro-section" id="introSection" aria-labelledby="introTitle">
+        <p class="eyebrow">DESIGN COGNITION STUDY / 01</p>
+        <h1 id="introTitle">请把思考，留下来。</h1>
+        <div class="intro-grid">
+          <div class="intro-copy">
+            <p>欢迎参加本次设计认知实验。实验将记录你在不同任务中的思考过程，并探索人机协作如何影响设计构想。</p>
+            <p>请在实验员完成设备调试后开始。每项任务开始与结束时，按下时间锚点；思考结束后，你将口述回顾过程。</p>
+          </div>
+          <form class="participant-form" id="participantForm" novalidate>
+            <label for="participantId">实验编号 <span aria-hidden="true">*</span></label>
+            <div class="field-row">
+              <input id="participantId" name="participantId" type="text" autocomplete="off" maxlength="24" placeholder="例如：P-024" aria-describedby="participantHint participantError" required />
+              <button class="button button-primary" type="submit">进入实验</button>
+            </div>
+            <p class="field-hint" id="participantHint">编号仅用于关联本次实验的任务和标记数据。</p>
+            <p class="field-error" id="participantError" role="alert"></p>
+          </form>
+        </div>
+        <dl class="intro-meta">
+          <div><dt>任务数量</dt><dd>28 个</dd></div>
+          <div><dt>思考时长</dt><dd>90 秒 / 任务</dd></div>
+          <div><dt>协作条件</dt><dd>IC · HC · AC · SC</dd></div>
+        </dl>
+      </section>
+
+      <section class="workspace is-hidden" id="workspace" aria-labelledby="workspaceTitle">
+        <div class="workspace-heading">
+          <div>
+            <p class="eyebrow" id="conditionLabel">CONDITION / IC</p>
+            <h1 id="workspaceTitle">情境构建</h1>
+          </div>
+          <div class="timer-wrap" aria-label="当前任务计时">
+            <span class="label">剩余时间</span>
+            <output id="timer" class="timer">01:30</output>
+          </div>
+        </div>
+
+        <div class="progress-bar" aria-label="实验进度"><div id="progressIndicator"></div></div>
+        <ol class="stepper" id="stepper" aria-label="实验流程"></ol>
+
+        <div class="work-layout" id="workLayout">
+          <article class="task-panel" aria-labelledby="taskTitle">
+            <div class="task-panel-header">
+              <span class="task-index" id="taskIndex">01 / 10</span>
+              <span class="status-badge" id="taskStatus">准备中</span>
+            </div>
+            <div class="task-content" id="taskContent">
+              <p class="task-overline">阅读后再开始思考</p>
+              <h2 id="taskTitle">构想一个可感知的场景</h2>
+              <p id="taskDescription">请根据题目构想一个场景，可以包含其中可能出现的事物、体验与感受。请先阅读完整题目，确认后再按铃开始思考。</p>
+              <button class="rest-screen is-hidden" id="restScreen" type="button" aria-label="结束静息并显示具体题目">
+                <span class="fixation-cross" aria-hidden="true"></span>
+              </button>
+              <div class="task-details is-hidden" id="taskDetails">
+                <div class="prompt-box">
+                  <span class="label">题目</span>
+                  <p id="taskPrompt">森林、动物、空气、声音、风景等</p>
+                </div>
+                <section class="case-study is-hidden" id="caseStudy" aria-labelledby="caseTitle">
+                  <p class="label" id="caseTitle">案例</p>
+                  <div id="caseContent"></div>
+                </section>
+                <p class="task-note" id="taskNote">思考结束后，按铃示意，并准备口述说明刚才的思考过程。</p>
+              </div>
+            </div>
+            <div class="task-actions">
+              <button class="button button-primary" id="thinkingButton" type="button">按铃开始思考</button>
+              <button class="button button-secondary" id="nextButton" type="button" disabled>完成并进入下一项</button>
+            </div>
+          </article>
+
+        </div>
+        <button class="ai-launcher is-hidden" id="aiLauncher" type="button" aria-controls="aiDrawer" aria-expanded="false">AI 协作</button>
+        <div class="drawer-backdrop is-hidden" id="drawerBackdrop"></div>
+        <aside class="ai-drawer is-hidden" id="aiDrawer" role="dialog" aria-modal="true" aria-labelledby="aiTitle" aria-hidden="true" tabindex="-1">
+          <section class="ai-card" id="aiCard">
+              <div class="ai-heading"><div><p class="label">AI COLLABORATOR</p><h2 id="aiTitle">协作工作台</h2></div><div class="drawer-controls"><span class="ai-status" id="aiStatus">不可用</span><button class="drawer-close" id="closeAiDrawer" type="button" aria-label="关闭 AI 协作">×</button></div></div>
+              <p id="aiDescription">IC 为独立构想模式。本任务不启用 AI 协作。</p>
+              <div class="chat-history" id="chatHistory" aria-live="polite">
+                <div class="chat-empty" id="chatEmpty">此处会保留本任务的协作记录。</div>
+              </div>
+              <label class="sr-only" for="ideaInput">发送给 AI 的内容</label>
+              <textarea id="ideaInput" rows="4" placeholder="开始思考后，直接在这里输入你的问题或初步想法…" disabled></textarea>
+              <div class="chat-actions"><p class="ai-footnote" id="aiFootnote">API 尚未接入 · 入口已预留</p><button class="button button-secondary" id="sendAi" type="button" disabled>发送</button></div>
+            </section>
+        </aside>
+      </section>
+    </main>
+
+    <dialog id="helpDialog" aria-labelledby="helpTitle">
+      <div class="dialog-header"><h2 id="helpTitle">实验须知</h2><button class="icon-button" id="closeHelp" type="button" aria-label="关闭说明">×</button></div>
+      <ol class="dialog-list">
+        <li>完整阅读题目后，按铃开始 90 秒思考。</li>
+        <li>思考结束时再次按铃，并向实验员说明过程。</li>
+        <li>HC、AC、SC 条件中，AI 对话仅可使用一次。</li>
+        <li>AI 不会替代你完成最终设计方案。</li>
+      </ol>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
