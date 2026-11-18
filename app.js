@@ -42,7 +42,18 @@ const tasks = modeProfiles.flatMap((profile, modeIndex) => stages.map((stage, st
   ai: profile.ai
 })));
 
-const state = { participantId: "", taskIndex: 0, phase: "ready", seconds: 90, timerId: null, anchors: [], chats: [], aiUsedTaskIds: new Set() };
+const state = {
+  participantId: "",
+  taskIndex: 0,
+  phase: "ready",
+  seconds: 90,
+  timerId: null,
+  anchors: [],
+  chats: [],
+  aiUsedTaskIds: new Set(),
+  completedTaskIndexes: new Set(),
+  modeTaskIndexes: modeProfiles.map((_, index) => index * stages.length)
+};
 const $ = (selector) => document.querySelector(selector);
 const els = {
   intro: $("#introSection"), workspace: $("#workspace"), form: $("#participantForm"), participant: $("#participantId"), participantError: $("#participantError"), headerParticipant: $("#headerParticipant"),
@@ -59,7 +70,12 @@ function toast(message) { els.toast.textContent = message; els.toast.classList.a
 
 function renderSteps() {
   const currentMode = currentTask().modeIndex;
-  els.stepper.innerHTML = modeProfiles.map((profile, index) => `<li class="${index === currentMode ? "active" : index < currentMode ? "done" : ""}"><span>${String(index + 1).padStart(2, "0")}</span><span>${profile.condition}</span></li>`).join("");
+  els.stepper.innerHTML = modeProfiles.map((profile, index) => {
+    const modeStart = index * stages.length;
+    const modeCompleted = tasks.slice(modeStart, modeStart + stages.length).every((_, taskIndex) => state.completedTaskIndexes.has(modeStart + taskIndex));
+    const stateClass = index === currentMode ? "active" : modeCompleted ? "done" : "";
+    return `<button class="mode-tab ${stateClass}" type="button" role="tab" aria-selected="${index === currentMode}" aria-controls="taskPanel" data-mode-index="${index}"><span>${String(index + 1).padStart(2, "0")}</span><span>${profile.condition}</span></button>`;
+  }).join("");
   els.progress.style.width = `${((currentMode + 1) / modeProfiles.length) * 100}%`;
 }
 function escapeHtml(value) { const node = document.createElement("div"); node.textContent = value; return node.innerHTML; }
@@ -118,6 +134,7 @@ function renderAiState() {
 }
 function renderTask() {
   const task = currentTask();
+  state.modeTaskIndexes[task.modeIndex] = state.taskIndex;
   state.seconds = 90;
   window.clearInterval(state.timerId);
   els.condition.textContent = `MODE / ${task.condition} · STAGE ${String(task.stageIndex + 1).padStart(2, "0")}`;
@@ -172,6 +189,7 @@ function finishThinking(timedOut = false) {
   if (state.phase !== "thinking") return;
   window.clearInterval(state.timerId);
   state.phase = "complete";
+  state.completedTaskIndexes.add(state.taskIndex);
   logAnchor(timedOut ? "time_up" : "thinking_ended");
   els.taskStatus.textContent = "已完成";
   els.taskStatus.className = "status-badge done";
@@ -249,7 +267,18 @@ function startExperiment(event) {
 }
 function resetToHome() {
   window.clearInterval(state.timerId);
-  Object.assign(state, { participantId: "", taskIndex: 0, phase: "ready", seconds: 90, timerId: null, anchors: [], chats: [], aiUsedTaskIds: new Set() });
+  Object.assign(state, {
+    participantId: "",
+    taskIndex: 0,
+    phase: "ready",
+    seconds: 90,
+    timerId: null,
+    anchors: [],
+    chats: [],
+    aiUsedTaskIds: new Set(),
+    completedTaskIndexes: new Set(),
+    modeTaskIndexes: modeProfiles.map((_, index) => index * stages.length)
+  });
   closeAiDrawer();
   els.aiLauncher.classList.add("is-hidden");
   els.headerParticipant.textContent = "未开始";
@@ -280,15 +309,40 @@ function completeExperiment() {
 }
 function nextTask() {
   if (state.phase !== "complete") return;
-  if (state.taskIndex === tasks.length - 1) { completeExperiment(); return; }
-  state.taskIndex += 1;
+  if (state.completedTaskIndexes.size === tasks.length) { completeExperiment(); return; }
+  const task = currentTask();
+  const nextStageIndex = task.stageIndex + 1;
+  state.taskIndex = nextStageIndex < stages.length
+    ? task.modeIndex * stages.length + nextStageIndex
+    : tasks.findIndex((_, taskIndex) => !state.completedTaskIndexes.has(taskIndex));
   state.phase = "briefing";
   renderTask();
+}
+
+function switchMode(modeIndex) {
+  const currentMode = currentTask().modeIndex;
+  if (modeIndex === currentMode) return;
+  if (state.phase === "thinking") {
+    window.clearInterval(state.timerId);
+    logAnchor("mode_switched");
+  }
+  state.modeTaskIndexes[currentMode] = state.taskIndex;
+  const modeStart = modeIndex * stages.length;
+  const firstIncomplete = tasks.slice(modeStart, modeStart + stages.length)
+    .findIndex((_, taskIndex) => !state.completedTaskIndexes.has(modeStart + taskIndex));
+  state.taskIndex = firstIncomplete === -1 ? state.modeTaskIndexes[modeIndex] : modeStart + firstIncomplete;
+  state.phase = "briefing";
+  renderTask();
+  toast(`已切换至 ${modeProfiles[modeIndex].condition} 模式`);
 }
 
 els.form.addEventListener("submit", startExperiment);
 els.thinking.addEventListener("click", startThinking);
 els.next.addEventListener("click", nextTask);
+els.stepper.addEventListener("click", (event) => {
+  const tab = event.target.closest("[data-mode-index]");
+  if (tab) switchMode(Number(tab.dataset.modeIndex));
+});
 els.restScreen.addEventListener("click", endRest);
 els.sendAi.addEventListener("click", sendAiMessage);
 els.aiLauncher.addEventListener("click", openAiDrawer);
