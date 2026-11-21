@@ -13,6 +13,36 @@ const keepCase = `
     <li>分享健身成果：拍照记录每天的变化，分享好友相互勉励，让健身不再是孤独的坚持。</li>
   </ul>`;
 
+const cases = {
+  IC: `案例：Keep是一款健身指导应用软件，可以对训练进程进行记录，并根据不同人的情况制定具有针对性的健身减肥计划，通过该软件，你可以及时查看自身的身体变化。
+主要功能：
+① 多种健身训练供你选择：训练计划针对不同人群、各种器械和阶段健身目标组合编排，适用最广泛的健身场景。
+② 真人同步训练记录训练进度：全程语音督导，自动同步进度，不需要背动作、记组数，跟着 Keep 马上练起来。
+③ 精准跑步记录，让你的跑步更加系统：精准跑步路线记录，跑前热身与跑后拉伸，Keep 提供更加完善和专业的跑步指导。
+④ 用步伐丈量世界：在 Keep 记录你的跑步轨迹，制定有氧课程表，助你更快达成你的跑步目标。
+⑤ 分享健身成果，一起进步：拍照记录每一天的变化，分享好友相互勉励，在 Keep 健身不再是孤独的坚持。`,
+  HC: `案例： Airbnb最初作为一种住宿共享服务开始，让用户可以租借私人住宿。随后，Airbnb推出了“体验”功能，这一功能扩展了其服务范围，从单纯的住宿共享转变为提供独特的本地体验和活动。
+本地化体验：Airbnb的体验功能允许当地人创建并提供独特的活动和体验，让游客能够以一种全新的方式探索目的地。
+多样性：从城市徒步游、烹饪课程到冒险活动，体验的种类多样，满足不同游客的兴趣和需求。
+用户友好的界面：通过简洁直观的设计，用户可以轻松浏览和预订体验。
+社交互动：这一功能鼓励游客与当地人和其他旅行者进行互动，增强了旅行的社交元素。
+质量保证：Airbnb对体验提供者进行筛选，确保提供的体验质量和安全性。
+可持续性和支持当地经济：通过支持当地小型企业和个人，这一服务模式有助于促进目的地的可持续发展。`,
+  AC: `案例：潮汐是一款支持睡眠、冥想、专注与放松的身心健康应用，通过自然声音、引导练习和睡眠记录等功能，为用户提供从睡前放松、夜间记录到清晨唤醒的支持。
+主要功能：
+① 自然声音与助眠内容：提供海浪、雨声、森林等自然声音，以及睡眠故事和助眠冥想，用户可以选择或混合声音，营造适合自己的休息氛围。
+② 冥想与呼吸引导：针对睡前、午休、减压等不同情境，提供冥想课程与呼吸练习，引导用户放松身心。
+③ 睡眠监测与报告：记录夜间睡眠情况、梦话与鼾声，并以睡眠报告呈现睡眠阶段、时长和评分，帮助用户了解自己的睡眠状态。
+④ 自然唤醒与小憩计时：提供自然声音唤醒、午休与小憩计时，让用户根据休息安排设置计时和唤醒方式。
+⑤ 专注计时与过程回顾：提供番茄钟、倒计时等专注模式，搭配背景声音，并通过专注与冥想报告呈现练习次数和累计时长`,
+  SC: `薄荷健康是一款支持饮食记录、营养查询与体重管理的健康应用，通过食物数据库、个性化饮食方案和身体数据记录，帮助用户了解日常饮食与身体变化，管理自己的健康目标。
+主要功能：
+① 食物热量与营养查询：提供多种食物的热量及营养素信息，帮助用户了解食物构成，为日常饮食选择提供参考。
+② 饮食与运动记录：支持记录每日三餐、热量摄入和运动消耗，并对记录进行分析，帮助用户回顾日常饮食与活动情况。
+③ 个性化饮食方案：根据用户的身体情况与体重管理目标，提供饮食计划和食谱，辅助用户安排日常饮食。
+④ 身体变化追踪：记录体重、体脂和围度等数据，呈现一段时间内的变化，帮助用户回顾体重管理过程。
+⑤ 社区交流与打卡：支持用户分享饮食记录和管理经验，参与打卡与挑战活动，与有相似目标的伙伴相互鼓励。`
+};
 const stages = [
   { key: "scene", name: "情境构建", description: "请根据题目构想一个场景，可以包含其中可能出现的事物、体验与感受。请先阅读完整题目，确认后再按铃开始思考。", prompt: (profile) => profile.scene },
   { key: "define", name: "问题定义", description: "根据场景，定义一类用户群体和他们的痛点需求。请先静息，确认阅读完整题目后按铃开始思考。", prompt: (profile) => `请思考____（用户）在${profile.domain}方面有____需求或痛点` },
@@ -30,15 +60,21 @@ const modeProfiles = [
   { condition: "SC", scene: "社区夜行：让居民安心地在夜间步行和停留", domain: "社区生活", reframeDomain: "安全感知", element: "共创", ai: true }
 ];
 
+const exactPrompts = {
+  IC: ["题目：请根据以下关键词构想一个场景：森林、动物、空气、声音、风景等", "题目：构想一个设计方案：请思考_____（用户）在运动健身方面有______需求或痛点", "题目：请围绕你刚刚确定的用户需求/痛点 构想一个可以解决这个问题的想法", "问题：请参照以上案例，基于你刚刚的想法，创造一个新的想法。", "问题：请思考你刚刚构思的想法的可行性", "问题：请抛弃之前的想法依旧以___为用户从疾病监控的方向重新构思一个想法", "问题：请在你刚刚的想法中加入打卡元素"],
+  HC: ["问题：请根据以下关键词构想一个场景：工作室、桌椅、装饰物等", "题目：请思考_____（用户）在旅行探险方面有______需求或痛点", "题目：请围绕你刚刚确定的用户需求/痛点 构想一个可以解决这个问题的想法", "问题：请参照以上案例，基于你刚刚的想法，创造一个新的想法(ChatGPT对话框中可直接粘贴此案例）。", "问题：请思考你刚刚构思的想法的可行性", "问题：请抛弃之前的想法依旧以___为用户从睡眠健康的方向重新构思一个想法", "问题：请在你刚刚的想法中加入好友圈元素"],
+  AC: ["题目：请根据以下关键词构想一个场景：海边、夜晚、月光、海浪、微风等", "题目：构想一个设计方案：请思考________（用户）在睡眠与休息方面有________需求或痛点", "题目：请围绕你刚刚确定的用户需求/痛点 构想一个可以解决这个问题的想法", "问题：请参照以上案例，基于你刚刚的想法，创造一个新的想法。", "问题：请思考你刚刚构思的想法的可行性", "问题：请抛弃之前的想法依旧以___为用户从日间精力管理的方向重新构思一个设计方案。", "问题：请在你刚刚的想法中加入游戏闯关元素"],
+  SC: ["题目：请根据以下关键词构想一个场景：田野、清晨、作物、泥土、阳光等。", "题目：构想一个设计方案：请思考_____（用户）在日常饮食与营养管理方面有______需求或痛点", "题目：请围绕你刚刚确定的用户需求/痛点 构想一个可以解决这个问题的想法", "问题：请参照以上案例，基于你刚刚的想法，创造一个新的想法。", "问题：请思考你刚刚构思的想法的可行性", "问题：请抛弃之前的想法依旧以___为用户从减少食物浪费的方向重新构思一个设计方案。", "问题：请在你刚刚的想法中加入积分奖励元素"]
+};
 const tasks = modeProfiles.flatMap((profile, modeIndex) => stages.map((stage, stageIndex) => ({
   condition: profile.condition,
   modeIndex,
   stageIndex,
-  name: stage.name,
-  description: stage.description,
-  prompt: stage.prompt(profile),
-  note: stage.note || "思考结束后，按铃示意，并准备口述说明刚才的思考过程。",
-  caseHtml: stage.caseFor ? stage.caseFor(profile) : "",
+  name: stageIndex === 5 ? "方案重构" : stage.name,
+  description: "",
+  prompt: exactPrompts[profile.condition][stageIndex],
+  note: "请口述刚刚的想法生成的过程",
+  caseHtml: stageIndex === 3 ? cases[profile.condition] : "",
   ai: profile.ai
 })));
 
@@ -134,6 +170,7 @@ function renderAiState() {
 }
 function renderTask() {
   const task = currentTask();
+  $("#taskPanel").classList.remove("is-resting");
   state.modeTaskIndexes[task.modeIndex] = state.taskIndex;
   state.seconds = 90;
   window.clearInterval(state.timerId);
@@ -144,7 +181,7 @@ function renderTask() {
   els.taskTitle.textContent = task.name;
   els.taskDescription.textContent = task.description;
   els.taskPrompt.textContent = task.prompt;
-  els.caseContent.innerHTML = task.caseHtml;
+  els.caseContent.textContent = task.caseHtml;
   els.caseStudy.classList.toggle("is-hidden", !task.caseHtml);
   els.timer.value = els.timer.textContent = formatTime(state.seconds);
   const isBriefing = state.phase === "briefing";
@@ -163,6 +200,7 @@ function renderTask() {
 }
 function startRest() {
   state.phase = "resting";
+  $("#taskPanel").classList.add("is-resting");
   logAnchor("rest_started");
   els.taskStatus.textContent = "静息中";
   els.taskDetails.classList.add("is-hidden");
@@ -174,6 +212,7 @@ function endRest() {
   if (state.phase !== "resting") return;
   logAnchor("rest_ended");
   state.phase = "ready";
+  $("#taskPanel").classList.remove("is-resting");
   els.restScreen.classList.add("is-hidden");
   els.taskDetails.classList.remove("is-hidden");
   els.taskStatus.textContent = "准备中";
@@ -196,7 +235,6 @@ function finishThinking(timedOut = false) {
   els.thinking.textContent = "本项已完成";
   els.thinking.disabled = true;
   els.next.disabled = false;
-  els.taskNote.textContent = "已记录完成时间。请向实验员口述回顾思考过程，然后继续下一阶段。";
   renderAiState();
   toast(timedOut ? "90 秒结束，已完成后台记录" : "已完成后台记录");
 }
@@ -209,7 +247,6 @@ function startThinking() {
     els.taskStatus.textContent = "思考中";
     els.taskStatus.className = "status-badge active";
     els.thinking.textContent = "按铃结束思考";
-    els.taskNote.textContent = "正在计时。完成时按铃，或等待计时结束。";
     renderAiState();
     toast("已开始本项 90 秒思考");
     state.timerId = window.setInterval(() => {
