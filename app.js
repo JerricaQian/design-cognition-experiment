@@ -139,6 +139,8 @@ function openAiDrawer() {
 }
 function renderAiState() {
   const task = currentTask();
+  $("#aiCard").classList.toggle("hc-mode", task.condition === "HC");
+  if (task.condition === "HC") { renderHc(); return; }
   const used = state.aiUsedTaskIds.has(taskKey());
   const enabled = canUseAi();
   els.aiLauncher.classList.toggle("is-hidden", !task.ai);
@@ -226,6 +228,7 @@ function logAnchor(type) {
 }
 function finishThinking(timedOut = false) {
   if (state.phase !== "thinking") return;
+  if (currentTask().condition === "HC" && !hcSession().saved) { openAiDrawer(); toast("请先完成三个协作步骤并保存判断。"); return; }
   window.clearInterval(state.timerId);
   state.phase = "complete";
   state.completedTaskIndexes.add(state.taskIndex);
@@ -248,6 +251,11 @@ function startThinking() {
     els.taskStatus.className = "status-badge active";
     els.thinking.textContent = "按铃结束思考";
     renderAiState();
+    if (currentTask().condition === "HC") {
+      els.timer.value = els.timer.textContent = "—";
+      openAiDrawer();
+      return;
+    }
     toast("已开始本项 90 秒思考");
     state.timerId = window.setInterval(() => {
       state.seconds -= 1;
@@ -257,6 +265,7 @@ function startThinking() {
   } else if (state.phase === "thinking") finishThinking();
 }
 async function sendAiMessage() {
+  if (currentTask().condition === "HC") return;
   const content = els.ideaInput.value.trim();
   if (!canUseAi() || !content) { if (!content && canUseAi()) toast("请先输入你的问题或初步想法"); return; }
   const task = currentTask();
