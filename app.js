@@ -139,8 +139,8 @@ function openAiDrawer() {
 }
 function renderAiState() {
   const task = currentTask();
-  $("#aiCard").classList.toggle("hc-mode", task.condition === "HC");
-  if (task.condition === "HC") { renderHc(); return; }
+  $("#aiCard").classList.toggle("hc-mode", ["HC", "AC"].includes(task.condition));
+  if (["HC", "AC"].includes(task.condition)) { renderHc(); return; }
   const used = state.aiUsedTaskIds.has(taskKey());
   const enabled = canUseAi();
   els.aiLauncher.classList.toggle("is-hidden", !task.ai);
@@ -228,7 +228,7 @@ function logAnchor(type) {
 }
 function finishThinking(timedOut = false) {
   if (state.phase !== "thinking") return;
-  if (currentTask().condition === "HC" && !hcSession().saved) { openAiDrawer(); toast("请先完成三个协作步骤并保存判断。"); return; }
+  if (["HC", "AC"].includes(currentTask().condition) && !hcSession().saved) { openAiDrawer(); toast("请先完成三个协作步骤并保存判断。"); return; }
   window.clearInterval(state.timerId);
   state.phase = "complete";
   state.completedTaskIndexes.add(state.taskIndex);
@@ -251,7 +251,7 @@ function startThinking() {
     els.taskStatus.className = "status-badge active";
     els.thinking.textContent = "按铃结束思考";
     renderAiState();
-    if (currentTask().condition === "HC") {
+    if (["HC", "AC"].includes(currentTask().condition)) {
       openAiDrawer();
       state.timerId = window.setInterval(() => {
         const session = hcSession();
@@ -274,7 +274,7 @@ function startThinking() {
   } else if (state.phase === "thinking") finishThinking();
 }
 async function sendAiMessage() {
-  if (currentTask().condition === "HC") return;
+  if (["HC", "AC"].includes(currentTask().condition)) return;
   const content = els.ideaInput.value.trim();
   if (!canUseAi() || !content) { if (!content && canUseAi()) toast("请先输入你的问题或初步想法"); return; }
   const task = currentTask();
