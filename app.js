@@ -252,8 +252,17 @@ function startThinking() {
     els.thinking.textContent = "按铃结束思考";
     renderAiState();
     if (currentTask().condition === "HC") {
-      els.timer.value = els.timer.textContent = "—";
       openAiDrawer();
+      state.timerId = window.setInterval(() => {
+        const session = hcSession();
+        if (session.pending) return;
+        state.seconds = Math.max(0, state.seconds - 1);
+        els.timer.value = els.timer.textContent = formatTime(state.seconds);
+        if (session.step === 1 || session.step === 3) {
+          session.stepSeconds = Math.max(0, session.stepSeconds - 1);
+          if ($("#hcStepTimer")) $("#hcStepTimer").textContent = formatTime(session.stepSeconds);
+        }
+      }, 1000);
       return;
     }
     toast("已开始本项 90 秒思考");
