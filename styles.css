@@ -146,6 +146,12 @@ dialog::backdrop { background: rgba(0, 0, 0, .35); }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .rest-screen { align-items: center; aspect-ratio: 1 / 1; background: var(--white); border: 0; cursor: pointer; display: grid; justify-self: center; margin: var(--space-6) auto 0; max-width: 620px; padding: 0; place-items: center; width: 100%; }
 .rest-screen.is-hidden { display: none; }
+#hcPanel { display: none; }
+.hc-mode #hcPanel { display: grid; gap: 14px; overflow-y: auto; }
+.hc-mode > #ideaInput, .hc-mode > .chat-actions { display: none; }
+#hcPanel h3, #hcPanel p { margin: 0; }
+#hcPanel textarea { width: 100%; resize: vertical; padding: 12px; font: inherit; }
+.hc-initial { border-left: 2px solid black; padding-left: 12px; white-space: pre-wrap; }
 .task-panel { position: relative; }
 .task-panel-header, .task-overline, #taskDescription, .prompt-box > .label, #caseTitle { display: none; }
 .case-study { white-space: pre-line; }
