@@ -116,6 +116,7 @@ function renderSteps() {
 }
 function escapeHtml(value) { const node = document.createElement("div"); node.textContent = value; return node.innerHTML; }
 function renderChat() {
+  updateExportState();
   const messages = state.chats.filter((item) => item.taskIndex === state.taskIndex);
   els.chatHistory.innerHTML = messages.length
     ? messages.map((message) => `<div class="chat-message ${message.role}"><span class="chat-role">${message.role === "user" ? "参与者" : "AI"}</span>${escapeHtml(message.content)}</div>`).join("")
@@ -225,6 +226,7 @@ function endRest() {
 function logAnchor(type) {
   const task = currentTask();
   state.anchors.push({ participantId: state.participantId, mode: task.condition, modeIndex: task.modeIndex + 1, stage: task.name, stageIndex: task.stageIndex + 1, type, timestamp: new Date().toISOString() });
+  updateExportState();
 }
 function finishThinking(timedOut = false) {
   if (state.phase !== "thinking") return;
@@ -342,8 +344,13 @@ function resetToHome() {
   els.workspace.classList.add("is-hidden");
   els.intro.classList.remove("is-hidden");
   els.participant.focus();
+  updateExportState();
+}
+function updateExportState() {
+  $("#headerExport").disabled = !state.anchors.length && !state.chats.length;
 }
 function exportData() {
+  if (!state.anchors.length && !state.chats.length) return;
   const data = { participantId: state.participantId, exportedAt: new Date().toISOString(), modes: modeProfiles.map((profile) => profile.condition), stagesPerMode: stages.map((stage) => stage.name), timeAnchors: state.anchors, aiChatRecords: state.chats };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const link = document.createElement("a");
@@ -392,6 +399,7 @@ function switchMode(modeIndex) {
 }
 
 els.form.addEventListener("submit", startExperiment);
+$("#headerExport").addEventListener("click", exportData);
 els.thinking.addEventListener("click", startThinking);
 els.next.addEventListener("click", nextTask);
 els.stepper.addEventListener("click", (event) => {
