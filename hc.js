@@ -7,7 +7,7 @@ $("#aiCard").append(hcPanel);
 
 function hcSession() {
   const key = `${state.participantId}:${state.taskIndex}`;
-  if (!hcSessions.has(key)) hcSessions.set(key, { step: 1, initial: "", direction: "", instruction: "", judgment: "", pending: false, error: "" });
+  if (!hcSessions.has(key)) hcSessions.set(key, { step: 1, stepSeconds: 30, initial: "", direction: "", instruction: "", judgment: "", pending: false, error: "" });
   return hcSessions.get(key);
 }
 function hcRecord(kind, content, task = currentTask(), taskIndex = state.taskIndex) {
@@ -25,7 +25,7 @@ function renderHc() {
   if (session.step === 1) content = `<h3>阶段 1：初步独立思考</h3><p>请先独立思考：根据你目前的理解，写下你认为值得关注的问题。</p><p>建议思考时间：30 秒。</p>${field("hcInitial", "初步理解或判断", session.initial)}<button class="button button-primary" id="hcSubmit" ${!enabled ? "disabled" : ""}>提交初步想法</button>`;
   else if (session.step === 2) content = `<h3>阶段 2：用户决定协作方向</h3><p class="hc-initial">${escapeHtml(session.initial)}</p>${field("hcDirection", "问题 1：你希望下一步探索什么？", session.direction)}${field("hcInstruction", "问题 2：你希望 AI 具体完成什么？", session.instruction)}<button class="button button-primary" id="hcSubmit" ${!enabled || session.pending ? "disabled" : ""}>${session.pending ? "等待 AI 回应…" : "提交指令"}</button>`;
   else content = `<h3>阶段 3：后续独立思考</h3><p>请再次独立思考：结合你最初的想法和 AI 的回应，你现在如何理解这个问题？请写下你的判断。</p><p>建议思考时间：60 秒。</p>${field("hcJudgment", "你的判断", session.judgment)}<button class="button button-primary" id="hcSubmit" ${!enabled ? "disabled" : ""}>保存判断</button>`;
-  hcPanel.innerHTML = content + `<p role="status">${escapeHtml(session.error)}</p>`;
+  hcPanel.innerHTML = (session.step !== 2 ? `<output id="hcStepTimer" aria-label="当前步骤剩余时间">${formatTime(session.stepSeconds)}</output>` : "") + content + `<p role="status">${escapeHtml(session.error)}</p>`;
   const fields = { hcInitial: "initial", hcDirection: "direction", hcInstruction: "instruction", hcJudgment: "judgment" };
   for (const [id, key] of Object.entries(fields)) $("#" + id)?.addEventListener("input", event => { session[key] = event.target.value; });
   $("#hcSubmit").addEventListener("click", submitHc);
@@ -55,6 +55,7 @@ async function submitHc() {
       state.chats.push({ participantId: state.participantId, taskIndex, mode: "HC", stage: task.name, timestamp: new Date().toISOString(), role: "assistant", content: payload.text });
       state.aiUsedTaskIds.add(key);
       session.step = 3;
+      session.stepSeconds = 60;
     } catch (error) { session.error = error.message; }
     finally { session.pending = false; if (state.taskIndex === taskIndex && currentTask().condition === "HC") renderHc(); }
   } else {
