@@ -6,7 +6,7 @@
     <meta name="description" content="设计认知实验研究工作台 demo" />
     <meta name="theme-color" content="#000000" />
     <title>Fieldwork - 设计认知实验</title>
-    <link rel="stylesheet" href="styles.css?v=20261125-hc" />
+    <link rel="stylesheet" href="styles.css?v=20261125-export" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳至主要内容</a>
@@ -19,7 +19,10 @@
         <span class="label">SESSION</span>
         <span id="headerParticipant">未开始</span>
       </div>
-      <button class="icon-button" id="helpButton" type="button" aria-label="查看实验说明" aria-expanded="false">?</button>
+      <div class="header-actions">
+        <button class="button button-secondary" id="headerExport" type="button" disabled>导出</button>
+        <button class="icon-button" id="helpButton" type="button" aria-label="查看实验说明" aria-expanded="false">?</button>
+      </div>
     </header>
 
     <main id="main-content">
@@ -124,7 +127,7 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="config.js?v=20261116"></script>
-    <script src="app.js?v=20261125-ac"></script>
+    <script src="app.js?v=20261125-export"></script>
     <script src="hc.js?v=20261125-ac"></script>
   </body>
 </html>
