@@ -138,7 +138,7 @@ function closeAiDrawer() {
   els.aiLauncher.setAttribute("aria-expanded", "false");
 }
 function openAiDrawer() {
-  if (!currentTask().ai) return;
+  if (!currentTask().ai || state.phase !== "thinking") return;
   els.aiDrawer.classList.remove("is-hidden");
   els.drawerBackdrop.classList.remove("is-hidden");
   els.aiDrawer.setAttribute("aria-hidden", "false");
@@ -147,6 +147,13 @@ function openAiDrawer() {
 }
 function renderAiState() {
   const task = currentTask();
+  if (!task.ai || state.phase !== "thinking") {
+    els.aiLauncher.classList.add("is-hidden");
+    closeAiDrawer();
+    els.ideaInput.disabled = true;
+    els.sendAi.disabled = true;
+    return;
+  }
   $("#aiCard").classList.toggle("hc-mode", ["HC", "AC"].includes(task.condition));
   if (["HC", "AC"].includes(task.condition)) { renderHc(); return; }
   const used = state.aiUsedTaskIds.has(taskKey());
