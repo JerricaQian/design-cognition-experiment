@@ -126,6 +126,10 @@ input::placeholder, textarea::placeholder { color: #9ca3af; }
 .chat-message { font-size: 13px; line-height: 1.65; max-width: 92%; padding: 10px 12px; }
 .chat-message.user { align-self: flex-end; background: var(--white); color: var(--black); }
 .chat-message.assistant { align-self: flex-start; border: 1px solid #7a7a7a; }
+.chat-message { font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
+.chat-message p { margin: 0; }
+.chat-message p + p { margin-top: 12px; }
+.chat-message strong { font-weight: 700; }
 .chat-role { display: none; }
 .ai-card textarea { background: #191919; border-color: #777; color: var(--white); min-height: 96px; }
 .ai-card textarea:disabled { color: #8c8c8c; opacity: 1; }
