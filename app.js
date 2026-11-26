@@ -115,11 +115,17 @@ function renderSteps() {
   els.progress.style.width = `${((currentMode + 1) / modeProfiles.length) * 100}%`;
 }
 function escapeHtml(value) { const node = document.createElement("div"); node.textContent = value; return node.innerHTML; }
+function formatChatContent(value) {
+  return String(value).replace(/\r\n?/g, "\n").split(/\n\s*\n/).map(paragraph => {
+    const safe = escapeHtml(paragraph).replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+    return `<p>${safe.replace(/\n/g, "<br>")}</p>`;
+  }).join("");
+}
 function renderChat() {
   updateExportState();
   const messages = state.chats.filter((item) => item.taskIndex === state.taskIndex);
   els.chatHistory.innerHTML = messages.length
-    ? messages.map((message) => `<div class="chat-message ${message.role}"><span class="chat-role">${message.role === "user" ? "参与者" : "AI"}</span>${escapeHtml(message.content)}</div>`).join("")
+    ? messages.map((message) => `<div class="chat-message ${message.role}">${formatChatContent(message.content)}</div>`).join("")
     : '<div class="chat-empty">此处会保留本任务的协作记录。</div>';
   els.chatHistory.scrollTop = els.chatHistory.scrollHeight;
 }
