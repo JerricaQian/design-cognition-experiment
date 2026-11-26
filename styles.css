@@ -92,7 +92,9 @@ input::placeholder, textarea::placeholder { color: #9ca3af; }
 .status-badge { border: 1px solid var(--black); border-radius: 999px; font-family: var(--mono); font-size: 11px; padding: 4px 8px; }
 .status-badge.active { background: var(--black); color: var(--white); }
 .status-badge.done { border-color: var(--success); color: var(--success); }
-.task-content { flex: 1; min-height: 0; overflow-y: auto; padding: 48px clamp(24px, 5vw, 64px); }
+.task-content { display: flex; flex: 1; min-height: 0; overflow-y: auto; padding: 32px clamp(24px, 5vw, 64px); }
+.task-copy { width: 100%; margin: auto; text-align: center; }
+.case-study { text-align: left; }
 .task-overline { color: var(--muted); font-family: var(--mono); font-size: 12px; margin-bottom: var(--space-2); }
 .task-content h2 { font-size: clamp(24px, 3.1vw, 36px); font-weight: 600; letter-spacing: -.04em; margin-bottom: var(--space-4); text-align: center; }
 .task-content > p:not(.task-overline):not(.task-note) { color: #374151; line-height: 1.8; max-width: 680px; }
@@ -131,12 +133,16 @@ input::placeholder, textarea::placeholder { color: #9ca3af; }
 .ai-card .button-secondary { border-color: var(--white); }
 .ai-card .button-secondary:hover { background: #1f1f1f; color: var(--white); }
 .ai-card .ai-footnote { color: #c7c7c7; }
-.ai-launcher { background: var(--black); border: 1px solid var(--black); border-radius: 999px 0 0 999px; bottom: 48px; color: var(--white); font-family: var(--mono); font-size: 12px; font-weight: 700; padding: 12px 14px; position: fixed; right: 0; z-index: 35; }
+.ai-launcher { background: var(--black); border: 1px solid var(--black); border-radius: 999px; color: var(--white); font-size: 14px; font-weight: 700; padding: 12px 24px; margin: 24px auto 0; }
+.is-resting .ai-launcher, .is-recalling .ai-launcher { display: none; }
 .ai-launcher:hover { background: #303030; }
 .ai-launcher.is-hidden, .ai-drawer.is-hidden, .drawer-backdrop.is-hidden { display: none; }
-.drawer-backdrop { background: rgba(0, 0, 0, .35); inset: 0; position: fixed; z-index: 40; }
-.ai-drawer { background: var(--black); height: 100dvh; padding: var(--space-4); position: fixed; right: 0; top: 0; width: min(480px, 100vw); z-index: 41; }
+.drawer-backdrop { background: rgba(0, 0, 0, .35); inset: 0; position: absolute; z-index: 40; }
+.ai-drawer { background: var(--black); height: 92%; padding: var(--space-4); position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(720px, 94%); z-index: 41; }
 .ai-drawer .ai-card { height: 100%; min-height: 0; padding: 0; }
+.ai-drawer .ai-card { overflow-y: auto; }
+.ai-drawer .chat-history { min-height: 100px; flex-shrink: 0; }
+.ai-drawer #hcPanel { flex-shrink: 0; overflow: visible; }
 
 dialog { border: 1px solid var(--black); border-radius: var(--r-md); color: var(--ink); max-width: min(520px, calc(100vw - 32px)); padding: var(--space-6); width: 100%; }
 dialog::backdrop { background: rgba(0, 0, 0, .35); }
