@@ -6,7 +6,7 @@
     <meta name="description" content="设计认知实验研究工作台 demo" />
     <meta name="theme-color" content="#000000" />
     <title>Fieldwork - 设计认知实验</title>
-    <link rel="stylesheet" href="styles.css?v=20261126-readable" />
+    <link rel="stylesheet" href="styles.css?v=20261126-review" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳至主要内容</a>
@@ -90,6 +90,10 @@
                   <div id="caseContent"></div>
                 </section>
                 <p class="task-note" id="taskNote">思考结束后，按铃示意，并准备口述说明刚才的思考过程。</p>
+                <div class="review-input">
+                  <label class="sr-only" for="taskReview">回顾记录</label>
+                  <textarea id="taskReview" rows="4" aria-label="回顾记录"></textarea>
+                </div>
               </div>
               </div>
             </div>
@@ -129,7 +133,7 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="config.js?v=20261116"></script>
-    <script src="app.js?v=20261126-readable"></script>
+    <script src="app.js?v=20261126-review"></script>
     <script src="hc.js?v=20261126-readable"></script>
   </body>
 </html>
