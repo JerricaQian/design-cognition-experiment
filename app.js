@@ -257,7 +257,6 @@ function startThinking() {
     els.thinking.textContent = "按铃结束思考";
     renderAiState();
     if (["HC", "AC"].includes(currentTask().condition)) {
-      openAiDrawer();
       state.timerId = window.setInterval(() => {
         const session = hcSession();
         if (session.pending) return;
@@ -401,6 +400,8 @@ function switchMode(modeIndex) {
   toast(`已切换至 ${modeProfiles[modeIndex].condition} 模式`);
 }
 
+$("#taskCopy").append(els.aiLauncher);
+$("#taskPanel").append(els.drawerBackdrop, els.aiDrawer);
 els.form.addEventListener("submit", startExperiment);
 $("#headerExport").addEventListener("click", exportData);
 els.thinking.addEventListener("click", startThinking);
