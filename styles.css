@@ -94,16 +94,20 @@ input::placeholder, textarea::placeholder { color: #9ca3af; }
 .status-badge.done { border-color: var(--success); color: var(--success); }
 .task-content { flex: 1; min-height: 0; overflow-y: auto; padding: 48px clamp(24px, 5vw, 64px); }
 .task-overline { color: var(--muted); font-family: var(--mono); font-size: 12px; margin-bottom: var(--space-2); }
-.task-content h2 { font-size: clamp(24px, 3.1vw, 36px); font-weight: 600; letter-spacing: -.04em; margin-bottom: var(--space-4); }
+.task-content h2 { font-size: clamp(24px, 3.1vw, 36px); font-weight: 600; letter-spacing: -.04em; margin-bottom: var(--space-4); text-align: center; }
 .task-content > p:not(.task-overline):not(.task-note) { color: #374151; line-height: 1.8; max-width: 680px; }
-.prompt-box { border-left: 2px solid var(--black); margin-top: var(--space-6); padding: 0 0 0 var(--space-4); }
+.prompt-box { margin-top: var(--space-6); padding: 0; text-align: center; }
 .prompt-box p { font-size: 16px; line-height: 1.65; margin: var(--space-2) 0 0; }
 .case-study { border-top: 1px solid var(--line); margin-top: var(--space-6); padding-top: var(--space-4); }
 .case-study > div { color: #374151; font-size: 13px; line-height: 1.75; margin-top: var(--space-3); }
 .case-study p { margin: 0; }
 .case-study ul { margin: var(--space-3) 0 0; padding-left: 20px; }
 .case-study li + li { margin-top: var(--space-2); }
-.task-note { color: var(--muted); font-size: 13px; line-height: 1.6; margin: var(--space-6) 0 0; }
+.task-note { display: none; }
+.is-recalling .task-content { display: flex; align-items: center; justify-content: center; }
+.is-recalling #taskTitle, .is-recalling .prompt-box, .is-recalling #caseStudy { display: none; }
+.is-recalling .task-details { width: 100%; text-align: center; }
+.is-recalling .task-note { display: block; margin: 0; color: var(--black); font-size: clamp(20px, 2.5vw, 30px); line-height: 1.8; text-align: center; }
 .task-actions { border-top: 1px solid var(--black); display: flex; flex-wrap: wrap; gap: var(--space-2); padding: var(--space-4); }
 .ai-card { background: var(--black); color: var(--white); display: flex; flex: 1; flex-direction: column; min-height: 0; padding: var(--space-4); }
 .ai-heading { align-items: start; display: flex; justify-content: space-between; }
