@@ -6,7 +6,7 @@
     <meta name="description" content="设计认知实验研究工作台 demo" />
     <meta name="theme-color" content="#000000" />
     <title>Fieldwork - 设计认知实验</title>
-    <link rel="stylesheet" href="styles.css?v=20261126-recall" />
+    <link rel="stylesheet" href="styles.css?v=20261126-modal" />
   </head>
   <body>
     <a class="skip-link" href="#main-content">跳至主要内容</a>
@@ -73,6 +73,7 @@
               <span class="status-badge" id="taskStatus">准备中</span>
             </div>
             <div class="task-content" id="taskContent">
+              <div class="task-copy" id="taskCopy">
               <p class="task-overline">阅读后再开始思考</p>
               <h2 id="taskTitle">构想一个可感知的场景</h2>
               <p id="taskDescription">请根据题目构想一个场景，可以包含其中可能出现的事物、体验与感受。请先阅读完整题目，确认后再按铃开始思考。</p>
@@ -89,6 +90,7 @@
                   <div id="caseContent"></div>
                 </section>
                 <p class="task-note" id="taskNote">思考结束后，按铃示意，并准备口述说明刚才的思考过程。</p>
+              </div>
               </div>
             </div>
             <div class="task-actions">
@@ -127,7 +129,7 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="config.js?v=20261116"></script>
-    <script src="app.js?v=20261126-recall"></script>
+    <script src="app.js?v=20261126-modal"></script>
     <script src="hc.js?v=20261125-ac"></script>
   </body>
 </html>
