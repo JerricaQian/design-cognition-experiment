@@ -135,9 +135,11 @@ input::placeholder, textarea::placeholder { color: #9ca3af; }
 .chat-message strong { font-weight: 700; }
 .voice-field { position: relative; min-width: 0; width: 100%; }
 .voice-field textarea, #hcPanel .voice-field textarea, #taskReview { padding-right: 48px; }
-.voice-button { position: absolute; right: 6px; top: 8px; display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; color: inherit; background: transparent; cursor: pointer; }
-.voice-button:hover { background: rgba(128, 128, 128, .2); }
-.voice-button.is-listening { color: #fff; background: #b91c1c; }
+.voice-button { position: absolute; right: 6px; top: 8px; z-index: 1; display: grid; place-items: center; width: 38px; height: 38px; padding: 0; border: 1px solid #111; border-radius: 50%; color: #fff; background: #111; cursor: pointer; }
+.ai-card .voice-button { color: #111; background: #fff; border-color: #fff; }
+.voice-button svg { display: block; width: 22px; height: 22px; }
+.voice-button:hover { opacity: .8; }
+.voice-button.is-listening, .ai-card .voice-button.is-listening { color: #fff; background: #b91c1c; border-color: #b91c1c; }
 .voice-button:disabled { opacity: .35; cursor: not-allowed; }
 .hc-mode > .voice-field { display: none; }
 .chat-role { display: none; }
