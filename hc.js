@@ -17,7 +17,8 @@ function renderHc() {
   const session = hcSession();
   const isAc = currentTask().condition === "AC";
   const enabled = state.phase === "thinking";
-  els.aiLauncher.classList.remove("is-hidden");
+  els.aiLauncher.classList.toggle("is-hidden", !enabled);
+  if (!enabled) closeAiDrawer();
   els.aiStatus.textContent = `步骤 ${session.step} / 3`;
   els.aiDescription.textContent = "";
   renderChat();
