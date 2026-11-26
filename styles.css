@@ -106,6 +106,9 @@ input::placeholder, textarea::placeholder { color: #9ca3af; }
 .case-study ul { margin: var(--space-3) 0 0; padding-left: 20px; }
 .case-study li + li { margin-top: var(--space-2); }
 .task-note { display: none; }
+.review-input { display: none; }
+.is-recalling .review-input { display: block; width: min(100%, 720px); margin: 24px auto 0; }
+#taskReview { width: 100%; min-height: 120px; resize: vertical; padding: 14px; font: inherit; line-height: 1.7; background: var(--white); color: var(--black); border: 1px solid var(--black); }
 .is-recalling .task-content { display: flex; align-items: center; justify-content: center; }
 .is-recalling #taskTitle, .is-recalling .prompt-box, .is-recalling #caseStudy { display: none; }
 .is-recalling .task-details { width: 100%; text-align: center; }
