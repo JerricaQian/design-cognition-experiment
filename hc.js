@@ -25,7 +25,7 @@ function renderHc() {
   let content;
   if (session.step === 1) content = `<h3>阶段 1：初步独立思考</h3><p>请先独立思考：根据你目前的理解，写下你认为值得关注的问题。</p><p>建议思考时间：30 秒。</p>${field("hcInitial", "初步理解或判断", session.initial)}<button class="button button-primary" id="hcSubmit" ${!enabled ? "disabled" : ""}>提交初步想法</button>`;
   else if (session.step === 2) content = isAc
-    ? `<h3>阶段 2：AI 确定协作方向</h3><p>AI对当前想法的判断：</p><p>AI确定的下一步方向：</p><p>AI的创造性贡献：</p><p>给设计师的思考切入点：</p><button class="button button-primary" id="hcSubmit" ${!enabled || session.pending ? "disabled" : ""}>${session.pending ? "等待 AI 回应…" : "重试 AI 回应"}</button>`
+    ? `<button class="button button-primary" id="hcSubmit" ${!enabled || session.pending ? "disabled" : ""}>${session.pending ? "等待 AI 回应…" : "重试 AI 回应"}</button>`
     : `<h3>阶段 2：用户决定协作方向</h3><p class="hc-initial">${escapeHtml(session.initial)}</p>${field("hcDirection", "问题 1：你希望下一步探索什么？", session.direction)}${field("hcInstruction", "问题 2：你希望 AI 具体完成什么？", session.instruction)}<button class="button button-primary" id="hcSubmit" ${!enabled || session.pending ? "disabled" : ""}>${session.pending ? "等待 AI 回应…" : "提交指令"}</button>`;
   else content = `<h3>阶段 3：后续独立思考</h3><p>请再次独立思考：结合你最初的想法和 AI 的回应，你现在如何理解这个问题？请写下你的判断。</p><p>建议思考时间：60 秒。</p>${field("hcJudgment", "你的判断", session.judgment)}<button class="button button-primary" id="hcSubmit" ${!enabled ? "disabled" : ""}>保存判断</button>`;
   hcPanel.innerHTML = (session.step !== 2 ? `<output id="hcStepTimer" aria-label="当前步骤剩余时间">${formatTime(session.stepSeconds)}</output>` : "") + content + `<p role="status">${escapeHtml(session.error)}</p>`;
