@@ -173,6 +173,7 @@ function renderAiState() {
 }
 function renderTask() {
   const task = currentTask();
+  $("#taskPanel").classList.remove("is-recalling");
   $("#taskPanel").classList.remove("is-resting");
   state.modeTaskIndexes[task.modeIndex] = state.taskIndex;
   state.seconds = 90;
@@ -183,7 +184,7 @@ function renderTask() {
   els.taskIndex.textContent = `${task.condition} · ${String(task.stageIndex + 1).padStart(2, "0")} / ${String(stages.length).padStart(2, "0")}`;
   els.taskTitle.textContent = task.name;
   els.taskDescription.textContent = task.description;
-  els.taskPrompt.textContent = task.prompt;
+  els.taskPrompt.textContent = task.prompt.replace(/^(题目|问题)[：:]\s*/, "");
   els.caseContent.textContent = task.caseHtml;
   els.caseStudy.classList.toggle("is-hidden", !task.caseHtml);
   els.timer.value = els.timer.textContent = formatTime(state.seconds);
@@ -233,6 +234,8 @@ function finishThinking(timedOut = false) {
   if (["HC", "AC"].includes(currentTask().condition) && !hcSession().saved) { openAiDrawer(); toast("请先完成三个协作步骤并保存判断。"); return; }
   window.clearInterval(state.timerId);
   state.phase = "complete";
+  closeAiDrawer();
+  $("#taskPanel").classList.add("is-recalling");
   state.completedTaskIndexes.add(state.taskIndex);
   logAnchor(timedOut ? "time_up" : "thinking_ended");
   els.taskStatus.textContent = "已完成";
