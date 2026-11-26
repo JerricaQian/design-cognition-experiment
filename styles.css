@@ -108,7 +108,7 @@ input::placeholder, textarea::placeholder { color: #9ca3af; }
 .task-note { display: none; }
 .review-input { display: none; }
 .is-recalling .review-input { display: block; width: min(100%, 720px); margin: 24px auto 0; }
-#taskReview { width: 100%; min-height: 120px; resize: vertical; padding: 14px; font: inherit; line-height: 1.7; background: var(--white); color: var(--black); border: 1px solid var(--black); }
+#taskReview { width: 100%; min-height: 120px; resize: vertical; padding: 14px 48px 14px 14px; font: inherit; line-height: 1.7; background: var(--white); color: var(--black); border: 1px solid var(--black); }
 .is-recalling .task-content { display: flex; align-items: center; justify-content: center; }
 .is-recalling #taskTitle, .is-recalling .prompt-box, .is-recalling #caseStudy { display: none; }
 .is-recalling .task-details { width: 100%; text-align: center; }
@@ -133,6 +133,13 @@ input::placeholder, textarea::placeholder { color: #9ca3af; }
 .chat-message p { margin: 0; }
 .chat-message p + p { margin-top: 12px; }
 .chat-message strong { font-weight: 700; }
+.voice-field { position: relative; min-width: 0; width: 100%; }
+.voice-field textarea, #hcPanel .voice-field textarea, #taskReview { padding-right: 48px; }
+.voice-button { position: absolute; right: 6px; top: 8px; display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 50%; color: inherit; background: transparent; cursor: pointer; }
+.voice-button:hover { background: rgba(128, 128, 128, .2); }
+.voice-button.is-listening { color: #fff; background: #b91c1c; }
+.voice-button:disabled { opacity: .35; cursor: not-allowed; }
+.hc-mode > .voice-field { display: none; }
 .chat-role { display: none; }
 .ai-card textarea { background: #191919; border-color: #777; color: var(--white); min-height: 96px; }
 .ai-card textarea:disabled { color: #8c8c8c; opacity: 1; }
