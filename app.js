@@ -86,6 +86,7 @@ const state = {
   timerId: null,
   anchors: [],
   chats: [],
+  reviews: [],
   aiUsedTaskIds: new Set(),
   completedTaskIndexes: new Set(),
   modeTaskIndexes: modeProfiles.map((_, index) => index * stages.length)
@@ -179,6 +180,7 @@ function renderAiState() {
 }
 function renderTask() {
   const task = currentTask();
+  $("#taskReview").value = state.reviews.find(item => item.taskIndex === state.taskIndex)?.content || "";
   $("#taskPanel").classList.remove("is-recalling");
   $("#taskPanel").classList.remove("is-resting");
   state.modeTaskIndexes[task.modeIndex] = state.taskIndex;
@@ -340,6 +342,7 @@ function resetToHome() {
     timerId: null,
     anchors: [],
     chats: [],
+    reviews: [],
     aiUsedTaskIds: new Set(),
     completedTaskIndexes: new Set(),
     modeTaskIndexes: modeProfiles.map((_, index) => index * stages.length)
@@ -355,18 +358,32 @@ function resetToHome() {
   updateExportState();
 }
 function updateExportState() {
-  $("#headerExport").disabled = !state.anchors.length && !state.chats.length;
+  $("#headerExport").disabled = !state.anchors.length && !state.chats.length && !state.reviews.length;
 }
 function exportData() {
-  if (!state.anchors.length && !state.chats.length) return;
-  const data = { participantId: state.participantId, exportedAt: new Date().toISOString(), modes: modeProfiles.map((profile) => profile.condition), stagesPerMode: stages.map((stage) => stage.name), timeAnchors: state.anchors, aiChatRecords: state.chats };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  if (!state.anchors.length && !state.chats.length && !state.reviews.length) return;
+  const lines = ["设计认知实验记录", `被试编号：${state.participantId}`, `导出时间：${new Date().toISOString()}`, "时间使用 ISO 8601 UTC 格式", ""];
+  tasks.forEach((task, taskIndex) => {
+    const anchors = state.anchors.filter(item => item.mode === task.condition && item.stageIndex === task.stageIndex + 1);
+    const chats = state.chats.filter(item => item.taskIndex === taskIndex);
+    const review = state.reviews.find(item => item.taskIndex === taskIndex);
+    if (!anchors.length && !chats.length && !review) return;
+    lines.push("========================================", `${task.condition} · ${task.stageIndex + 1} · ${task.name}`, `题干：${task.prompt.replace(/^(题目|问题)[：:]\s*/, "")}`, "", "【时间锚点】");
+    anchors.forEach(item => lines.push(`${item.timestamp}  ${item.type}`));
+    lines.push("", "【协作与独立思考记录】");
+    chats.forEach(item => lines.push(`[${item.timestamp}] ${item.role === "assistant" ? "AI" : "被试"}${item.kind ? ` · ${item.kind}` : ""}`, item.content, ""));
+    lines.push("【任务回顾记录】");
+    if (review) lines.push(`首次记录：${review.createdAt}`, `最后更新：${review.updatedAt}`, review.content);
+    else lines.push("尚无回顾记录");
+    lines.push("");
+  });
+  const blob = new Blob(["\uFEFF", lines.join("\n")], { type: "text/plain;charset=utf-8" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
-  link.download = `fieldwork-${state.participantId || "session"}.json`;
+  link.download = `fieldwork-${state.participantId || "session"}.txt`;
   link.click();
   window.setTimeout(() => URL.revokeObjectURL(link.href), 0);
-  toast("已导出时间锚点与 AI 对话记录");
+  toast("已导出时间锚点、对话及回顾记录 TXT");
 }
 function completeExperiment() {
   const anchorCount = state.anchors.length;
@@ -409,6 +426,18 @@ function switchMode(modeIndex) {
 $("#taskCopy").append(els.aiLauncher);
 $("#taskPanel").append(els.drawerBackdrop, els.aiDrawer);
 els.form.addEventListener("submit", startExperiment);
+$("#taskReview").addEventListener("input", event => {
+  const task = currentTask();
+  const now = new Date().toISOString();
+  let review = state.reviews.find(item => item.taskIndex === state.taskIndex);
+  if (!review) {
+    review = { taskIndex: state.taskIndex, mode: task.condition, stage: task.name, stageIndex: task.stageIndex + 1, createdAt: now };
+    state.reviews.push(review);
+  }
+  review.content = event.target.value;
+  review.updatedAt = now;
+  updateExportState();
+});
 $("#headerExport").addEventListener("click", exportData);
 els.thinking.addEventListener("click", startThinking);
 els.next.addEventListener("click", nextTask);
